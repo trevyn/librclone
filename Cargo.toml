@@ -1,0 +1,13 @@
+[package]
+authors = ["trevyn <trevyn-git@protonmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0 OR CC0-1.0"
+name = "librclone"
+repository = "https://github.com/trevyn/librclone"
+version = "0.1.0"
+
+[workspace]
+members = ["librclone-sys"]
+
+[dependencies]
+librclone-sys = {path = "librclone-sys", version = "0.1"}
