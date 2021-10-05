@@ -56,8 +56,8 @@ jobs:
           rust-version: stable
       
       - name: cargo publish librclone-sys
-        run: cargo publish --token ${{ secrets.CARGO_TOKEN }}
+        run: cargo publish --no-verify --token ${{ secrets.CARGO_TOKEN }}
         working-directory: 'librclone-sys'
 
       - name: cargo publish librclone
-        run: cargo publish --token ${{ secrets.CARGO_TOKEN }}
+        run: cargo publish --no-verify --token ${{ secrets.CARGO_TOKEN }}
