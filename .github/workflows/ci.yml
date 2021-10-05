@@ -25,11 +25,12 @@ jobs:
         run: exit ${{ steps.lychee.outputs.exit_code }}
 
   test:
-    name: test rust ${{ matrix.rust }}
-    runs-on: [ubuntu-latest, macos-11]
+    name: test ${{ matrix.os }} rust ${{ matrix.rust }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macos-11]
         rust: [1.54, stable, beta, nightly]
 #              1.54 is minimum rustc version
     steps:
