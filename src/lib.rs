@@ -13,9 +13,9 @@ pub fn finalize() {
 }
 
 /// Does a single librclone RPC call.
-/// `method`, eg "operations/list", from https://rclone.org/rc/#supported-commands
-/// `input` is a serialized JSON object.
-/// Return value (`Ok` or `Err`) is a serialized JSON String.
+/// - `method`: e.g. `operations/list`, from <https://rclone.org/rc/#supported-commands>
+/// - `input`: a serialized JSON object.
+/// - Return value (`Ok` or `Err`) is a serialized JSON String.
 pub fn rpc<S1: Into<String>, S2: Into<String>>(method: S1, input: S2) -> Result<String, String> {
     let method_bytes: Vec<u8> = method.into().into_bytes();
     let mut method_c_chars: Vec<i8> = method_bytes.iter().map(|c| *c as i8).collect::<Vec<i8>>();

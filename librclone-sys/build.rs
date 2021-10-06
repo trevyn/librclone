@@ -7,6 +7,12 @@ fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
     let out_path = PathBuf::from(&out_dir);
 
+    // docs.rs builder blocks network, would have to vendor everything. This allows `librclone` itself to doc build.
+    if let Ok(_) = std::env::var("DOCS_RS") {
+        std::fs::write(out_path.join("bindings.rs"), "").unwrap();
+        return;
+    }
+
     println!("cargo:rerun-if-changed=go.mod");
     println!("cargo:rerun-if-changed=go.sum");
 
