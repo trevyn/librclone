@@ -5,7 +5,7 @@ edition = "2018"
 license = "MIT OR Apache-2.0 OR CC0-1.0"
 name = "librclone-sys"
 repository = "https://github.com/trevyn/librclone"
-version = "0.1.0"
+version = "0.1.1"
 
 [build-dependencies]
 bindgen = "0.59"
