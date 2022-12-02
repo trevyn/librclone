@@ -11,5 +11,4 @@ version = "0.1.1"
 members = ["librclone-sys"]
 
 [dependencies]
-libc = "0.2"
 librclone-sys = {path = "librclone-sys", version = "0.1.1"}

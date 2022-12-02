@@ -31,7 +31,7 @@ pub fn rpc<S1: Into<String>, S2: Into<String>>(method: S1, input: S2) -> Result<
     let output_c_str: &CStr = unsafe { CStr::from_ptr(result.Output) };
     let output_slice: &str = output_c_str.to_str().unwrap();
     let output: String = output_slice.to_owned();
-    unsafe { libc::free(result.Output as *mut libc::c_void) };
+    unsafe { librclone_sys::RcloneFreeString(result.Output) };
 
     match result.Status {
         200 => Ok(output),
