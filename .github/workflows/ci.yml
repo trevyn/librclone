@@ -41,7 +41,12 @@ jobs:
 
       - run: rustup default ${{ matrix.rust }} && rustup update ${{ matrix.rust }}
 
+      - run: go version
+
       - run: cargo test -- --nocapture
+
+      - run: cargo test -- --nocapture
+        working-directory: "librclone-sys"
 
       - run: cargo doc --no-deps
 
