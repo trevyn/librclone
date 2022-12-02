@@ -33,6 +33,9 @@ fn main() {
 
     let bindings = bindgen::Builder::default()
         .header(format!("{}/librclone.h", out_dir))
+        .allowlist_function("RcloneRPC")
+        .allowlist_function("RcloneInitialize")
+        .allowlist_function("RcloneFinalize")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .generate()
         .expect("Unable to generate bindings");
