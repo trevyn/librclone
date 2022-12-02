@@ -21,7 +21,7 @@ fn main() {
         .arg(&format!("{}/librclone.a", out_dir))
         .arg("github.com/rclone/rclone/librclone")
         .status()
-        .unwrap();
+        .expect("`go build` failed. Is `go` installed and latest version?");
 
     println!("cargo:rustc-link-search=native={}", out_dir);
     println!("cargo:rustc-link-lib=static=rclone");
