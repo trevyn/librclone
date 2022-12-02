@@ -8,7 +8,7 @@ fn main() {
     let out_path = PathBuf::from(&out_dir);
 
     // docs.rs builder blocks network, would have to vendor everything. This allows `librclone` itself to doc build.
-    if let Ok(_) = std::env::var("DOCS_RS") {
+    if std::env::var("DOCS_RS").is_ok() {
         std::fs::write(out_path.join("bindings.rs"), "").unwrap();
         return;
     }
@@ -17,7 +17,7 @@ fn main() {
     println!("cargo:rerun-if-changed=go.sum");
 
     Command::new("go")
-        .args(&["build", "--buildmode=c-archive", "-o"])
+        .args(["build", "--buildmode=c-archive", "-o"])
         .arg(&format!("{}/librclone.a", out_dir))
         .arg("github.com/rclone/rclone/librclone")
         .status()
@@ -32,7 +32,7 @@ fn main() {
     }
 
     let bindings = bindgen::Builder::default()
-        .header(&format!("{}/librclone.h", out_dir))
+        .header(format!("{}/librclone.h", out_dir))
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .generate()
         .expect("Unable to generate bindings");
