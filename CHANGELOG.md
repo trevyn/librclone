@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0 - 2022-12-22
+
+- Update rclone to v1.61.0
+
 ## 0.2.0 - 2022-12-02
 
 - Update rclone to v1.60.1
