@@ -1,3 +1,7 @@
+[<img alt="github" src="https://img.shields.io/badge/github-trevyn/librclone-663399?style=for-the-badge&labelColor=555555&logo=github" height="27">](https://github.com/trevyn/librclone)
+[<img alt="crates.io" src="https://img.shields.io/crates/v/librclone.svg?style=for-the-badge&color=ffc833&logo=rust" height="27">](https://crates.io/crates/librclone)
+[<img alt="docs.rs" src="https://img.shields.io/badge/docs.rs-librclone-353535?style=for-the-badge&labelColor=555555&logo=docs.rs" height="27">](https://docs.rs/librclone)
+
 Rust bindings for [`librclone`](https://github.com/rclone/rclone/tree/master/librclone).
 
 Automatically compiles `rclone` as a library and links it into your Rust application.

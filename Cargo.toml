@@ -1,5 +1,6 @@
 [package]
 description = "Rust bindings for librclone."
+documentation = "https://docs.rs/librclone"
 edition = "2018"
 license = "MIT OR Apache-2.0 OR CC0-1.0"
 name = "librclone"
