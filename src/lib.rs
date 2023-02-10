@@ -18,12 +18,12 @@ pub fn finalize() {
 /// - Return value (`Ok` or `Err`) is a serialized JSON String.
 pub fn rpc<S1: Into<String>, S2: Into<String>>(method: S1, input: S2) -> Result<String, String> {
     let method_bytes: Vec<u8> = method.into().into_bytes();
-    let mut method_c_chars: Vec<i8> = method_bytes.iter().map(|c| *c as i8).collect::<Vec<i8>>();
+    let mut method_c_chars: Vec<c_char> = method_bytes.iter().map(|c| *c as c_char).collect::<Vec<c_char>>();
     method_c_chars.push(0); // null terminator
     let method_mut_ptr: *mut c_char = method_c_chars.as_mut_ptr();
 
     let input_bytes: Vec<u8> = input.into().into_bytes();
-    let mut input_c_chars: Vec<i8> = input_bytes.iter().map(|c| *c as i8).collect::<Vec<i8>>();
+    let mut input_c_chars: Vec<c_char> = input_bytes.iter().map(|c| *c as c_char).collect::<Vec<c_char>>();
     input_c_chars.push(0); // null terminator
     let input_mut_ptr: *mut c_char = input_c_chars.as_mut_ptr();
 
