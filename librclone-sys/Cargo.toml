@@ -7,4 +7,4 @@ repository = "https://github.com/trevyn/librclone"
 version = "0.3.0+rclone-v1.61.0"
 
 [build-dependencies]
-bindgen = "0.63"
+bindgen = "0.64"
