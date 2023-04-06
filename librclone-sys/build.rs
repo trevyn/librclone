@@ -29,6 +29,7 @@ fn main() {
     if target_triple.ends_with("darwin") {
         println!("cargo:rustc-link-lib=framework=CoreFoundation");
         println!("cargo:rustc-link-lib=framework=Security");
+        println!("cargo:rustc-link-lib=resolv");
     }
 
     let bindings = bindgen::Builder::default()
