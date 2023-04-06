@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 - 2023-04-06
+
+- Update rclone to v1.62.2
+- Change `librclone-sys` SPDX to MIT-only to reflect `rclone` license
+- Fix `aarch64-unknown-linux-gnu` build (Thanks @dotlambda and @winterqt!)
+- Fix `libresolv` linkage on macOS with Rust 1.66+ and Go 1.20+.
+
 ## 0.3.0 - 2022-12-22
 
 - Update rclone to v1.61.0
