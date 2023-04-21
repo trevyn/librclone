@@ -1,6 +1,6 @@
 [package]
 description = "Rust bindings for librclone."
-edition = "2018"
+edition = "2021"
 license = "MIT"
 name = "librclone-sys"
 repository = "https://github.com/trevyn/librclone"
