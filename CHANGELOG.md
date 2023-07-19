@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0 - 2023-07-19
+
+- Update rclone to v1.63.1
+- MSRV is now 1.60
+
 ## 0.4.0 - 2023-04-06
 
 - Update rclone to v1.62.2
