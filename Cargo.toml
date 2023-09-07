@@ -7,7 +7,7 @@ license = "MIT OR Apache-2.0 OR CC0-1.0"
 name = "librclone"
 readme = "README.md"
 repository = "https://github.com/trevyn/librclone"
-rust-version = "1.60"
+rust-version = "1.63"
 version = "0.5.0"
 
 [workspace]
