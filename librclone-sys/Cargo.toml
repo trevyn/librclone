@@ -5,7 +5,7 @@ license = "MIT"
 name = "librclone-sys"
 repository = "https://github.com/trevyn/librclone"
 rust-version = "1.63"
-version = "0.5.0+rclone-v1.63.1"
+version = "0.6.0+rclone-v1.64.0"
 
 [build-dependencies]
 bindgen = "0.68.1"
