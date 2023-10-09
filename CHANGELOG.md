@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1 - 2023-10-09
+
+- Vendor Go dependencies into `librclone-sys`; should now support offline builds
+
 ## 0.6.0 - 2023-10-02
 
 - Update rclone to v1.64.0
