@@ -15,7 +15,7 @@ jobs:
   checklinks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: trevyn/lychee-action@v1
         id: lychee
@@ -37,11 +37,14 @@ jobs:
         rust: ["1.63", stable, beta, nightly]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: rustup default ${{ matrix.rust }} && rustup update ${{ matrix.rust }}
 
       - run: go version
+
+      - run: go mod vendor
+        working-directory: "librclone-sys"
 
       - run: cargo test -- --nocapture
 
@@ -56,12 +59,15 @@ jobs:
     if: ${{ contains(github.event.head_commit.message, 'librclone@') && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: rustup default stable && rustup update stable
 
+      - run: go mod vendor
+        working-directory: "librclone-sys"
+
       - name: cargo publish librclone-sys
-        run: cargo publish --no-verify --token ${{ secrets.CARGO_TOKEN }}
+        run: cargo publish --allow-dirty --no-verify --token ${{ secrets.CARGO_TOKEN }}
         working-directory: "librclone-sys"
 
       - name: cargo publish librclone
