@@ -4,10 +4,11 @@
 
 - Update rclone to v1.64.1
 - Change `librclone-sys` SPDX to include licenses for all `rclone` Go dependencies
+- MSRV is now 1.65
 
 ## 0.6.1 - 2023-10-09
 
-- Vendor Go dependencies into `librclone-sys`; should now support offline builds
+- Vendor Go dependencies into `librclone-sys`; should now support offline builds (#12, thanks @brettalcox!)
 
 ## 0.6.0 - 2023-10-02
 
