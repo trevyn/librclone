@@ -8,7 +8,7 @@
 
 ## 0.6.1 - 2023-10-09
 
-- Vendor Go dependencies into `librclone-sys`; should now support offline builds (#12, thanks @brettalcox!)
+- Vendor Go dependencies into `librclone-sys`; should now support offline builds ([#12](https://github.com/trevyn/librclone/issues/12), thanks @brettalcox!)
 
 ## 0.6.0 - 2023-10-02
 
