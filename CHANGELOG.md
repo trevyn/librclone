@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.2 - 2023-10-18
+
+- Update rclone to v1.64.1
+- Change `librclone-sys` SPDX to include licenses for all `rclone` Go dependencies
+
 ## 0.6.1 - 2023-10-09
 
 - Vendor Go dependencies into `librclone-sys`; should now support offline builds
