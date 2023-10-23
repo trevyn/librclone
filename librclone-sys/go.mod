@@ -2,7 +2,7 @@ module github.com/trevyn/librclone
 
 go 1.19
 
-require github.com/rclone/rclone v1.64.1
+require github.com/rclone/rclone v1.64.2
 
 require (
 	bazil.org/fuse v0.0.0-20221209211307-2abb8038c751 // indirect
