@@ -6,7 +6,7 @@ license = "MIT AND Apache-2.0 AND BSD-3-Clause AND BSD-2-Clause AND MPL-2.0 AND 
 name = "librclone-sys"
 repository = "https://github.com/trevyn/librclone"
 rust-version = "1.65"
-version = "0.6.2+rclone-v1.64.1"
+version = "0.6.3+rclone-v1.64.2"
 
 [build-dependencies]
 bindgen = "0.68.1"
