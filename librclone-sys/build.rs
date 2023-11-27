@@ -38,7 +38,7 @@ fn main() {
         .allowlist_function("RcloneInitialize")
         .allowlist_function("RcloneFinalize")
         .allowlist_function("RcloneFreeString")
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .generate()
         .expect("Unable to generate bindings");
 
