@@ -17,6 +17,11 @@ fn main() {
     println!("cargo:rerun-if-changed=go.sum");
 
     Command::new("go")
+        .args(["mod", "vendor"])
+        .status()
+        .expect("`go mod vendor` failed. Is `go` installed and latest version?");
+
+    Command::new("go")
         .args(["build", "--buildmode=c-archive", "-o"])
         .arg(&format!("{}/librclone.a", out_dir))
         .arg("github.com/rclone/rclone/librclone")
