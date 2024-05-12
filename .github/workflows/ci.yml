@@ -38,10 +38,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+          check-latest: true
+          cache: false
+      - run: go version
 
       - run: rustup default ${{ matrix.rust }} && rustup update ${{ matrix.rust }}
-
-      - run: go version
 
       - run: go mod vendor
         working-directory: "librclone-sys"
@@ -67,6 +71,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+          check-latest: true
+          cache: false
+      - run: go version
 
       - run: rustup default stable && rustup update stable
 
