@@ -10,6 +10,7 @@ Supports macOS and Linux. PR for Windows support welcome!
 
 | crate version       | `rclone` version | MSRV | Minimum `go` version |
 | ------------------- | ---------------- | ---- | -------------------- |
+| `librclone = "0.8"` | v1.66.0          | 1.70 | 1.21                 |
 | `librclone = "0.7"` | v1.65.0          | 1.65 | 1.19                 |
 | `librclone = "0.6"` | v1.64.2          | 1.65 | 1.19                 |
 | `librclone = "0.5"` | v1.63.1          | 1.60 | 1.18                 |
