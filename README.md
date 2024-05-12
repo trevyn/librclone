@@ -24,5 +24,5 @@ To generate updated `go.mod` and `go.sum` files on new rclone version:
 cd librclone-sys
 rm go.mod && rm go.sum
 go mod init github.com/trevyn/librclone
-go mod tidy
+go mod tidy -go=1.21
 ```
