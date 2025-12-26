@@ -10,6 +10,7 @@ Supports macOS and Linux. PR for Windows support welcome!
 
 | crate version       | `rclone` version | MSRV | Minimum `go` version |
 | ------------------- | ---------------- | ---- | -------------------- |
+| `librclone = "0.10"` | v1.72.1          | 1.82 | 1.24.4               |
 | `librclone = "0.9"` | v1.69.0          | 1.82 | 1.21                 |
 | `librclone = "0.8"` | v1.66.0          | 1.70 | 1.21                 |
 | `librclone = "0.7"` | v1.65.0          | 1.65 | 1.19                 |
@@ -20,11 +21,16 @@ Supports macOS and Linux. PR for Windows support welcome!
 | `librclone = "0.2"` | v1.60.1          | 1.54 | 1.17                 |
 | `librclone = "0.1"` | v1.56.2          | 1.54 | 1.17                 |
 
-To generate updated `go.mod` and `go.sum` files on new rclone version:
+## Updating the bundled rclone version
 
-```ignore
-cd librclone-sys
-rm go.mod && rm go.sum
-go mod init github.com/trevyn/librclone
-go mod tidy -go=1.21
-```
+1. Update the Go module in `librclone-sys` using the Go version from the target rclone `go.mod`:
+
+   ```sh
+   cd librclone-sys
+   go mod edit -go=<go-version>
+   go mod edit -require=github.com/rclone/rclone@<rclone-version>
+   go mod tidy -go=<go-version>
+   ```
+
+2. Bump crate versions in `Cargo.toml` and `librclone-sys/Cargo.toml`.
+3. Update the version table in `README.md` and add a changelog entry in `CHANGELOG.md`.

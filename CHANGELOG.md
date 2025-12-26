@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.0 - 2025-12-26
+
+- Update rclone to v1.72.1
+- Minimum Go version is now 1.24.4
+
 ## 0.9.0 - 2025-02-12
 
 - Update rclone to v1.69.0
