@@ -45,6 +45,13 @@ Optional Windows build environment variables:
 - `LIBRCLONE_WINFSP_INCLUDE` (path to WinFsp `fuse` headers; if not set, build script falls back to `CPATH`, `INCLUDE`, then `PATH`-derived WinFsp locations)
 - `LIBRCLONE_GO_CC` (override cgo compiler used by `go build`, e.g. `gcc` or `clang`)
 
+If a Windows build still does not include `cmount`, create `.cargo/config.toml` with:
+
+```toml
+[env]
+LIBRCLONE_WINFSP_INCLUDE = { value = 'C:\Program Files (x86)\WinFsp\inc\fuse;C:\Program Files\WinFsp\inc\fuse', force = false }
+```
+
 When targeting `*-pc-windows-msvc`, ensure `lib.exe` is available in `PATH`.
 
 To generate updated `go.mod` and `go.sum` files on new rclone version:
