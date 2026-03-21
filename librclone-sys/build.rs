@@ -131,6 +131,7 @@ fn run_go_build(
     context: &str,
 ) {
     let mut args = vec!["build".to_string(), format!("--buildmode={build_mode}")];
+    args.push("-mod=mod".to_string());
     args.extend(extra_args.iter().map(|arg| (*arg).to_string()));
     args.push("-o".to_string());
     args.push(output_path.display().to_string());
