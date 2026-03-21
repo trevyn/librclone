@@ -33,11 +33,32 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         rust: ["1.82", stable, beta, nightly]
 
     steps:
       - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+        if: ${{ matrix.os == 'windows-latest' }}
+        with:
+          arch: x64
+
+      - name: Install WinFsp
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: choco install winfsp -y --no-progress
+
+      - name: Set WinFsp include
+        if: ${{ matrix.os == 'windows-latest' }}
+        shell: pwsh
+        run: |
+          $candidates = @(
+            "C:\Program Files (x86)\WinFsp\inc\fuse",
+            "C:\Program Files\WinFsp\inc\fuse"
+          )
+          $selected = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $selected) { throw "WinFsp fuse headers not found." }
+          "LIBRCLONE_WINFSP_INCLUDE=$selected" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - uses: actions/setup-go@v5
         with:
           go-version: "1.25.0"
@@ -66,31 +87,8 @@ jobs:
         if: ${{ !contains(github.event.head_commit.message, 'librclone@') }}
         run: cargo package --no-verify
 
-  windows-test:
-    name: test windows-latest rust stable
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version: "1.25.0"
-          check-latest: true
-          cache: false
-      - run: go version
-
-      - run: rustup default stable && rustup update stable
-
-      - run: go mod vendor
-        working-directory: "librclone-sys"
-
-      - run: cargo test -- --nocapture
-
-      - run: cargo test -- --nocapture
-        working-directory: "librclone-sys"
-
   publish:
-    needs: [test, windows-test]
+    needs: [test]
     runs-on: ubuntu-latest
     if: ${{ contains(github.event.head_commit.message, 'librclone@') && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
