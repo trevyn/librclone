@@ -19,6 +19,11 @@ struct BuildConfig<'a> {
     error_context: &'a str,
 }
 
+struct WindowsGoConfig {
+    extra_env: Vec<(&'static str, String)>,
+    extra_go_args: &'static [&'static str],
+}
+
 fn main() {
     let target_triple = env::var("TARGET").unwrap();
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
@@ -36,17 +41,18 @@ fn main() {
     if target_triple.contains("windows") {
         println!("cargo:rerun-if-env-changed=LIBRCLONE_WINFSP_INCLUDE");
         println!("cargo:rerun-if-env-changed=LIBRCLONE_GO_CC");
+        let windows_go = windows_go_config();
         build_librclone(
             &out_path,
             BuildConfig {
                 mode: "c-shared",
                 output_name: "librclone.dll",
-                extra_go_args: &["-tags", "cmount"],
+                extra_go_args: windows_go.extra_go_args,
                 link_kind: "dylib",
                 link_name: "librclone",
                 error_context: "unable to build librclone.dll for Windows",
             },
-            &windows_go_env(),
+            &windows_go.extra_env,
         );
         if target_triple.contains("msvc") {
             create_msvc_import_library(&out_path, &target_triple);
@@ -87,17 +93,22 @@ fn build_librclone(out_path: &Path, config: BuildConfig<'_>, extra_env: &[(&str,
     );
 
     println!("cargo:rustc-link-search=native={}", out_path.display());
-    println!("cargo:rustc-link-lib={}={}", config.link_kind, config.link_name);
+    println!(
+        "cargo:rustc-link-lib={}={}",
+        config.link_kind, config.link_name
+    );
 }
 
-fn windows_go_env() -> Vec<(&'static str, String)> {
+fn windows_go_config() -> WindowsGoConfig {
     let mut extra_env = vec![("CGO_ENABLED", "1".to_string())];
+    let mut extra_go_args: &'static [&'static str] = &[];
 
-    if let Some(winfsp_include) = resolve_winfsp_include() {
+    if let Some(winfsp_include) = non_empty_env("LIBRCLONE_WINFSP_INCLUDE") {
         extra_env.push(("CPATH", winfsp_include));
+        extra_go_args = &["-tags", "cmount"];
     } else {
         println!(
-            "cargo:warning=WinFsp include directory was not auto-detected. Set LIBRCLONE_WINFSP_INCLUDE if build fails with missing fuse headers."
+            "cargo:warning=LIBRCLONE_WINFSP_INCLUDE is not set. Building without `cmount` tag on Windows."
         );
     }
 
@@ -105,7 +116,10 @@ fn windows_go_env() -> Vec<(&'static str, String)> {
         extra_env.push(("CC", go_cc));
     }
 
-    extra_env
+    WindowsGoConfig {
+        extra_env,
+        extra_go_args,
+    }
 }
 
 fn generate_bindings(out_path: &Path) {
@@ -167,19 +181,6 @@ fn create_msvc_import_library(out_path: &Path, target_triple: &str) {
         &[],
         "unable to generate MSVC import library librclone.lib; ensure lib.exe is available in PATH",
     );
-}
-
-fn resolve_winfsp_include() -> Option<String> {
-    non_empty_env("LIBRCLONE_WINFSP_INCLUDE").or_else(auto_detect_winfsp_include)
-}
-
-fn auto_detect_winfsp_include() -> Option<String> {
-    ["ProgramFiles(x86)", "ProgramFiles"]
-        .iter()
-        .filter_map(|env_name| non_empty_env(env_name))
-        .map(|base| PathBuf::from(base).join("WinFsp").join("inc").join("fuse"))
-        .find(|candidate| candidate.is_dir())
-        .map(|path| path.to_string_lossy().into_owned())
 }
 
 fn non_empty_env(key: &str) -> Option<String> {
