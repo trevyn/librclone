@@ -23,7 +23,7 @@ Supports macOS, Linux, and Windows.
 
 To run the example:
 
-```rust
+```shell
 cargo run -p basic
 ```
 
@@ -33,7 +33,7 @@ Windows support is currently focused on `*-pc-windows-msvc`.
 
 On Windows, `librclone-sys` builds `librclone.dll` using:
 
-```go
+```shell
 go build --buildmode=c-shared -tags cmount
 ```
 
