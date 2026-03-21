@@ -1,6 +1,9 @@
 #![doc = include_str!("../README.md")]
 
-use std::{ffi::CStr, os::raw::c_char};
+use std::{
+    ffi::{CStr, CString},
+    os::raw::c_char,
+};
 
 /// Initializes rclone as a library.
 pub fn initialize() {
@@ -17,36 +20,46 @@ pub fn finalize() {
 /// - `input`: a serialized JSON object.
 /// - Return value (`Ok` or `Err`) is a serialized JSON String.
 pub fn rpc<S1: Into<String>, S2: Into<String>>(method: S1, input: S2) -> Result<String, String> {
-    let method_bytes: Vec<u8> = method.into().into_bytes();
-    let mut method_c_chars: Vec<c_char> = method_bytes.iter().map(|c| *c as c_char).collect::<Vec<c_char>>();
-    method_c_chars.push(0); // null terminator
-    let method_mut_ptr: *mut c_char = method_c_chars.as_mut_ptr();
+    let method_c = CString::new(method.into())
+        .map_err(|_| "method contains an interior null byte".to_string())?;
+    let input_c = CString::new(input.into())
+        .map_err(|_| "input contains an interior null byte".to_string())?;
 
-    let input_bytes: Vec<u8> = input.into().into_bytes();
-    let mut input_c_chars: Vec<c_char> = input_bytes.iter().map(|c| *c as c_char).collect::<Vec<c_char>>();
-    input_c_chars.push(0); // null terminator
-    let input_mut_ptr: *mut c_char = input_c_chars.as_mut_ptr();
+    let result = unsafe {
+        librclone_sys::RcloneRPC(
+            method_c.as_ptr() as *mut c_char,
+            input_c.as_ptr() as *mut c_char,
+        )
+    };
 
-    let result = unsafe { librclone_sys::RcloneRPC(method_mut_ptr, input_mut_ptr) };
-    let output_c_str: &CStr = unsafe { CStr::from_ptr(result.Output) };
-    let output_slice: &str = output_c_str.to_str().unwrap();
-    let output: String = output_slice.to_owned();
+    if result.Output.is_null() {
+        return Err("RcloneRPC returned null output".to_string());
+    }
+
+    let output = unsafe { CStr::from_ptr(result.Output) }
+        .to_string_lossy()
+        .to_string();
     unsafe { librclone_sys::RcloneFreeString(result.Output) };
 
-    match result.Status {
-        200 => Ok(output),
-        _ => Err(output),
+    if result.Status == 200 {
+        Ok(output)
+    } else {
+        Err(output)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn it_works() {
         initialize();
         assert_eq!(rpc("rc/noop", "{}"), Ok("{}\n".to_string()));
-        assert_eq!(rpc("rc/error", "{}"), Err("{\n\t\"error\": \"arbitrary error on input map[]\",\n\t\"input\": {},\n\t\"path\": \"rc/error\",\n\t\"status\": 500\n}\n".to_string()));
+        assert_eq!(
+            rpc("rc/error", "{}"),
+            Err("{\n\t\"error\": \"arbitrary error on input map[]\",\n\t\"input\": {},\n\t\"path\": \"rc/error\",\n\t\"status\": 500\n}\n".to_string())
+        );
         finalize();
     }
 }

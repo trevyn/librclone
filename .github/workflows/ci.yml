@@ -66,8 +66,31 @@ jobs:
         if: ${{ !contains(github.event.head_commit.message, 'librclone@') }}
         run: cargo package --no-verify
 
+  windows-test:
+    name: test windows-latest rust stable
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+          check-latest: true
+          cache: false
+      - run: go version
+
+      - run: rustup default stable && rustup update stable
+
+      - run: go mod vendor
+        working-directory: "librclone-sys"
+
+      - run: cargo test -- --nocapture
+
+      - run: cargo test -- --nocapture
+        working-directory: "librclone-sys"
+
   publish:
-    needs: [test]
+    needs: [test, windows-test]
     runs-on: ubuntu-latest
     if: ${{ contains(github.event.head_commit.message, 'librclone@') && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
