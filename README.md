@@ -6,25 +6,60 @@ Rust bindings for [`librclone`](https://github.com/rclone/rclone/tree/master/lib
 
 Automatically compiles `rclone` as a library and links it into your Rust application.
 
-Supports macOS and Linux. PR for Windows support welcome!
+Supports macOS, Linux, and Windows.
 
-| crate version       | `rclone` version | MSRV | Minimum `go` version |
-| ------------------- | ---------------- | ---- | -------------------- |
-| `librclone = "0.9"` | v1.69.0          | 1.82 | 1.21                 |
-| `librclone = "0.8"` | v1.66.0          | 1.70 | 1.21                 |
-| `librclone = "0.7"` | v1.65.0          | 1.65 | 1.19                 |
-| `librclone = "0.6"` | v1.64.2          | 1.65 | 1.19                 |
-| `librclone = "0.5"` | v1.63.1          | 1.60 | 1.18                 |
-| `librclone = "0.4"` | v1.62.2          | 1.54 | 1.18                 |
-| `librclone = "0.3"` | v1.61.0          | 1.54 | 1.17                 |
-| `librclone = "0.2"` | v1.60.1          | 1.54 | 1.17                 |
-| `librclone = "0.1"` | v1.56.2          | 1.54 | 1.17                 |
+| crate version        | `rclone` version | MSRV | Minimum `go` version |
+| -------------------- | ---------------- | ---- | -------------------- |
+| `librclone = "0.10"` | v1.73.2          | 1.82 | 1.25                 |
+| `librclone = "0.9"`  | v1.69.0          | 1.82 | 1.21                 |
+| `librclone = "0.8"`  | v1.66.0          | 1.70 | 1.21                 |
+| `librclone = "0.7"`  | v1.65.0          | 1.65 | 1.19                 |
+| `librclone = "0.6"`  | v1.64.2          | 1.65 | 1.19                 |
+| `librclone = "0.5"`  | v1.63.1          | 1.60 | 1.18                 |
+| `librclone = "0.4"`  | v1.62.2          | 1.54 | 1.18                 |
+| `librclone = "0.3"`  | v1.61.0          | 1.54 | 1.17                 |
+| `librclone = "0.2"`  | v1.60.1          | 1.54 | 1.17                 |
+| `librclone = "0.1"`  | v1.56.2          | 1.54 | 1.17                 |
+
+To run the example:
+
+```shell
+cargo run -p basic
+```
+
+## Windows Runtime And Build Notes
+
+Windows support is currently focused on `*-pc-windows-msvc`.
+
+On Windows, `librclone-sys` builds `librclone.dll` using:
+
+```shell
+go build --buildmode=c-shared -tags cmount
+```
+
+This is shared linking: your executable has a runtime dependency on `librclone.dll`.
+Place `librclone.dll` next to the executable or make it available via `PATH`.
+
+Optional Windows build environment variables:
+
+- `LIBRCLONE_WINFSP_INCLUDE` (path to WinFsp `fuse` headers; if not set, build script falls back to `CPATH`, `INCLUDE`, then `PATH`-derived WinFsp locations)
+- `LIBRCLONE_GO_CC` (override cgo compiler used by `go build`, e.g. `gcc` or `clang`)
+
+If a Windows build still does not include `cmount`, create `.cargo/config.toml` with:
+
+```toml
+[env]
+LIBRCLONE_WINFSP_INCLUDE = { value = 'C:\Program Files (x86)\WinFsp\inc\fuse;C:\Program Files\WinFsp\inc\fuse', force = false }
+```
+
+When targeting `*-pc-windows-msvc`, ensure `lib.exe` is available in `PATH`.
 
 To generate updated `go.mod` and `go.sum` files on new rclone version:
 
-```ignore
+```shell
 cd librclone-sys
 rm go.mod && rm go.sum
 go mod init github.com/trevyn/librclone
-go mod tidy -go=1.21
+go mod tidy
+go get github.com/rclone/rclone/librclone
 ```

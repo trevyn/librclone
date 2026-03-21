@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0 - local
+
+- Update rclone to v1.73.2
+- Minimum Go version is now 1.25.0
+- MSRV remains 1.82
+
 ## 0.9.0 - 2025-02-12
 
 - Update rclone to v1.69.0
