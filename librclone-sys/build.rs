@@ -41,6 +41,9 @@ fn main() {
     if target_triple.contains("windows") {
         println!("cargo:rerun-if-env-changed=LIBRCLONE_WINFSP_INCLUDE");
         println!("cargo:rerun-if-env-changed=LIBRCLONE_GO_CC");
+        println!("cargo:rerun-if-env-changed=CPATH");
+        println!("cargo:rerun-if-env-changed=INCLUDE");
+        println!("cargo:rerun-if-env-changed=PATH");
         let windows_go = windows_go_config();
         build_librclone(
             &out_path,
@@ -103,12 +106,12 @@ fn windows_go_config() -> WindowsGoConfig {
     let mut extra_env = vec![("CGO_ENABLED", "1".to_string())];
     let mut extra_go_args: &'static [&'static str] = &[];
 
-    if let Some(winfsp_include) = non_empty_env("LIBRCLONE_WINFSP_INCLUDE") {
+    if let Some(winfsp_include) = resolve_winfsp_include() {
         extra_env.push(("CPATH", winfsp_include));
         extra_go_args = &["-tags", "cmount"];
     } else {
         println!(
-            "cargo:warning=LIBRCLONE_WINFSP_INCLUDE is not set. Building without `cmount` tag on Windows."
+            "cargo:warning=WinFsp headers were not found (LIBRCLONE_WINFSP_INCLUDE/CPATH/INCLUDE/PATH). Building without `cmount` tag on Windows."
         );
     }
 
@@ -120,6 +123,52 @@ fn windows_go_config() -> WindowsGoConfig {
         extra_env,
         extra_go_args,
     }
+}
+
+fn resolve_winfsp_include() -> Option<String> {
+    non_empty_env("LIBRCLONE_WINFSP_INCLUDE")
+        .or_else(|| find_winfsp_include_from_env_path_list("CPATH"))
+        .or_else(|| find_winfsp_include_from_env_path_list("INCLUDE"))
+        .or_else(find_winfsp_include_from_path_env)
+}
+
+fn find_winfsp_include_from_env_path_list(var_name: &str) -> Option<String> {
+    let paths = env::var_os(var_name)?;
+    env::split_paths(&paths)
+        .find_map(|path| resolve_winfsp_include_from_candidate(&path))
+        .map(|path| path.to_string_lossy().into_owned())
+}
+
+fn find_winfsp_include_from_path_env() -> Option<String> {
+    let path_env = env::var_os("PATH")?;
+    for path_entry in env::split_paths(&path_env) {
+        if let Some(candidate) = resolve_winfsp_include_from_candidate(&path_entry) {
+            return Some(candidate.to_string_lossy().into_owned());
+        }
+
+        if let Some(parent) = path_entry.parent() {
+            if let Some(candidate) = resolve_winfsp_include_from_candidate(parent) {
+                return Some(candidate.to_string_lossy().into_owned());
+            }
+        }
+    }
+    None
+}
+
+fn resolve_winfsp_include_from_candidate(candidate: &Path) -> Option<PathBuf> {
+    let candidates = [
+        candidate.to_path_buf(),
+        candidate.join("fuse"),
+        candidate.join("inc").join("fuse"),
+    ];
+
+    for include_dir in candidates {
+        if include_dir.join("fuse_common.h").is_file() {
+            return Some(include_dir);
+        }
+    }
+
+    None
 }
 
 fn generate_bindings(out_path: &Path) {

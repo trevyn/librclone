@@ -42,7 +42,7 @@ Place `librclone.dll` next to the executable or make it available via `PATH`.
 
 Optional Windows build environment variables:
 
-- `LIBRCLONE_WINFSP_INCLUDE` (path to WinFsp `fuse` headers; when set, Windows build enables `-tags cmount`)
+- `LIBRCLONE_WINFSP_INCLUDE` (path to WinFsp `fuse` headers; if not set, build script falls back to `CPATH`, `INCLUDE`, then `PATH`-derived WinFsp locations)
 - `LIBRCLONE_GO_CC` (override cgo compiler used by `go build`, e.g. `gcc` or `clang`)
 
 When targeting `*-pc-windows-msvc`, ensure `lib.exe` is available in `PATH`.
